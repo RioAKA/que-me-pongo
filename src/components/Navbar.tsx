@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -13,8 +14,9 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="font-heading text-2xl font-bold tracking-tight">
-          URBAN<span className="text-accent">VOGUE</span>
+        <Link to="/" className="flex items-center gap-2">
+          <img src={logo} alt="QMP?" className="h-10 w-10 rounded-full" />
+          <span className="font-heading text-xl font-bold tracking-tight">QMP?</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 font-body text-sm tracking-wide">
