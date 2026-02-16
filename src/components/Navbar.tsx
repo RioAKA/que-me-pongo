@@ -1,0 +1,67 @@
+import { Link } from "react-router-dom";
+import { ShoppingBag, User, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
+import { Button } from "@/components/ui/button";
+
+const Navbar = () => {
+  const { user, signOut } = useAuth();
+  const { totalItems, openCart } = useCart();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+        <Link to="/" className="font-heading text-2xl font-bold tracking-tight">
+          URBAN<span className="text-accent">VOGUE</span>
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-8 font-body text-sm tracking-wide">
+          <Link to="/" className="hover:text-accent transition-colors">Inicio</Link>
+          <Link to="/catalog" className="hover:text-accent transition-colors">Catálogo</Link>
+          <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Camisetas</Link>
+          <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Chaquetas</Link>
+          <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Accesorios</Link>
+        </nav>
+
+        <div className="flex items-center gap-3">
+          {user ? (
+            <Button variant="ghost" size="sm" onClick={signOut} className="hidden md:inline-flex text-sm">
+              Cerrar sesión
+            </Button>
+          ) : (
+            <Link to="/auth">
+              <Button variant="ghost" size="icon"><User className="h-5 w-5" /></Button>
+            </Link>
+          )}
+          <button onClick={openCart} className="relative p-2 hover:text-accent transition-colors">
+            <ShoppingBag className="h-5 w-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="md:hidden border-t bg-background px-4 py-4 flex flex-col gap-3 animate-fade-in">
+          <Link to="/" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Inicio</Link>
+          <Link to="/catalog" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Catálogo</Link>
+          {user ? (
+            <button onClick={() => { signOut(); setMobileOpen(false); }} className="py-2 text-left hover:text-accent">Cerrar sesión</button>
+          ) : (
+            <Link to="/auth" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Iniciar sesión</Link>
+          )}
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Navbar;

@@ -1,0 +1,45 @@
+import { Link } from "react-router-dom";
+
+const Footer = () => (
+  <footer className="bg-primary text-primary-foreground mt-20">
+    <div className="container mx-auto px-4 py-16">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div>
+          <h3 className="font-heading text-2xl font-bold mb-4">URBAN<span className="text-accent">VOGUE</span></h3>
+          <p className="text-primary-foreground/70 font-body text-sm leading-relaxed">
+            Moda urbana con actitud. Estilo que habla por ti.
+          </p>
+        </div>
+        <div>
+          <h4 className="font-heading font-semibold mb-4">Tienda</h4>
+          <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
+            <Link to="/catalog" className="hover:text-accent transition-colors">Catálogo</Link>
+            <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Camisetas</Link>
+            <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Chaquetas</Link>
+            <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Accesorios</Link>
+          </div>
+        </div>
+        <div>
+          <h4 className="font-heading font-semibold mb-4">Info</h4>
+          <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
+            <span>Envíos y devoluciones</span>
+            <span>Política de privacidad</span>
+            <span>Términos y condiciones</span>
+          </div>
+        </div>
+        <div>
+          <h4 className="font-heading font-semibold mb-4">Contacto</h4>
+          <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
+            <span>hola@urbanvogue.com</span>
+            <span>+34 612 345 678</span>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-primary-foreground/20 mt-12 pt-6 text-center text-sm text-primary-foreground/50">
+        © 2026 UrbanVogue. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+);
+
+export default Footer;
