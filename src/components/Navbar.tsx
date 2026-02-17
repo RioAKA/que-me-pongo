@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag, User, Menu, X } from "lucide-react";
+import { ShoppingBag, User, Menu, X, Shield } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useRole } from "@/hooks/useRole";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
   const { totalItems, openCart } = useCart();
+  const { isAdmin } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -25,6 +27,11 @@ const Navbar = () => {
           <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Camisetas</Link>
           <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Chaquetas</Link>
           <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Accesorios</Link>
+          {isAdmin && (
+            <Link to="/admin" className="hover:text-accent transition-colors flex items-center gap-1">
+              <Shield className="h-4 w-4" />Admin
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -55,6 +62,11 @@ const Navbar = () => {
         <div className="md:hidden border-t bg-background px-4 py-4 flex flex-col gap-3 animate-fade-in">
           <Link to="/" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Inicio</Link>
           <Link to="/catalog" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Catálogo</Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent flex items-center gap-1">
+              <Shield className="h-4 w-4" />Admin
+            </Link>
+          )}
           {user ? (
             <button onClick={() => { signOut(); setMobileOpen(false); }} className="py-2 text-left hover:text-accent">Cerrar sesión</button>
           ) : (
