@@ -9,10 +9,10 @@ import { SlidersHorizontal, X } from "lucide-react";
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const PRICE_RANGES = [
   { label: "Todos", min: 0, max: Infinity },
-  { label: "< 30€", min: 0, max: 30 },
-  { label: "30€ - 60€", min: 30, max: 60 },
-  { label: "60€ - 100€", min: 60, max: 100 },
-  { label: "> 100€", min: 100, max: Infinity },
+  { label: "< $5.000", min: 0, max: 5000 },
+  { label: "$5.000 - $15.000", min: 5000, max: 15000 },
+  { label: "$15.000 - $30.000", min: 15000, max: 30000 },
+  { label: "> $30.000", min: 30000, max: Infinity },
 ];
 
 const Catalog = () => {

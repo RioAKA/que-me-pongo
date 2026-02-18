@@ -27,6 +27,7 @@ const Navbar = () => {
           <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Camisetas</Link>
           <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Chaquetas</Link>
           <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Accesorios</Link>
+          <Link to="/social" className="hover:text-accent transition-colors">Social</Link>
           {isAdmin && (
             <Link to="/admin" className="hover:text-accent transition-colors flex items-center gap-1">
               <Shield className="h-4 w-4" />Admin
@@ -62,6 +63,7 @@ const Navbar = () => {
         <div className="md:hidden border-t bg-background px-4 py-4 flex flex-col gap-3 animate-fade-in">
           <Link to="/" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Inicio</Link>
           <Link to="/catalog" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Catálogo</Link>
+          <Link to="/social" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Social</Link>
           {isAdmin && (
             <Link to="/admin" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent flex items-center gap-1">
               <Shield className="h-4 w-4" />Admin

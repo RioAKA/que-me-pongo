@@ -2,6 +2,8 @@ import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { formatARS } from "@/lib/currency";
+import PaymentIcons from "@/components/PaymentIcons";
 
 const CartSlideOver = () => {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice } = useCart();
@@ -36,7 +38,7 @@ const CartSlideOver = () => {
                   <div className="flex-1 min-w-0">
                     <h4 className="font-body font-medium text-sm truncate">{item.product?.name}</h4>
                     <p className="text-xs text-muted-foreground">{item.size} · {item.color}</p>
-                    <p className="font-heading font-semibold text-sm mt-1">{item.product?.price?.toFixed(2)}€</p>
+                    <p className="font-heading font-semibold text-sm mt-1">{formatARS(item.product?.price || 0)}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 rounded-md hover:bg-muted"><Minus className="h-3 w-3" /></button>
                       <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
@@ -50,11 +52,14 @@ const CartSlideOver = () => {
             <div className="border-t p-6 space-y-4">
               <div className="flex justify-between font-heading text-lg font-semibold">
                 <span>Total</span>
-                <span>{totalPrice.toFixed(2)}€</span>
+                <span>{formatARS(totalPrice)}</span>
               </div>
               <Button className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 font-body font-semibold" asChild>
                 <Link to="/checkout" onClick={closeCart}>Finalizar Compra</Link>
               </Button>
+              <div className="flex justify-center pt-2">
+                <PaymentIcons />
+              </div>
             </div>
           </>
         )}

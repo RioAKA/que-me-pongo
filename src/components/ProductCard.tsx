@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Tables } from "@/integrations/supabase/types";
+import { formatARS } from "@/lib/currency";
 
 interface ProductCardProps {
   product: Tables<"products">;
@@ -27,9 +28,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="mt-3 space-y-1">
         <h3 className="font-body font-medium text-sm truncate">{product.name}</h3>
         <div className="flex items-center gap-2">
-          <span className="font-heading font-semibold">{product.price.toFixed(2)}€</span>
+          <span className="font-heading font-semibold">{formatARS(product.price)}</span>
           {hasDiscount && (
-            <span className="text-sm text-muted-foreground line-through">{product.original_price!.toFixed(2)}€</span>
+            <span className="text-sm text-muted-foreground line-through">{formatARS(product.original_price!)}</span>
           )}
         </div>
       </div>

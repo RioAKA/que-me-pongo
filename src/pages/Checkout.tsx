@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { formatARS } from "@/lib/currency";
 
 const Checkout = () => {
   const { items, totalPrice } = useCart();
@@ -75,12 +76,12 @@ const Checkout = () => {
           {items.map(item => (
             <div key={item.id} className="flex justify-between text-sm font-body">
               <span>{item.product?.name} × {item.quantity}</span>
-              <span>{((item.product?.price || 0) * item.quantity).toFixed(2)}€</span>
+              <span>{formatARS((item.product?.price || 0) * item.quantity)}</span>
             </div>
           ))}
           <div className="border-t pt-4 flex justify-between font-heading text-lg font-bold">
             <span>Total</span>
-            <span>{totalPrice.toFixed(2)}€</span>
+            <span>{formatARS(totalPrice)}</span>
           </div>
           <Button className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 font-body font-semibold py-5">
             Confirmar Pedido

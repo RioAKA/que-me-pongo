@@ -81,9 +81,9 @@ const Index = () => {
       {/* Banner */}
       <section className="bg-secondary">
         <div className="container mx-auto px-4 py-20 text-center space-y-6">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">Envío Gratis en Pedidos +59€</h2>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold">Envíos a Todo el País</h2>
           <p className="font-body text-muted-foreground max-w-md mx-auto">
-            Devoluciones gratuitas en 30 días. Sin preguntas.
+            Por Correo Argentino y Andreani. Devoluciones gratuitas en 30 días.
           </p>
           <Button asChild className="rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 px-8 font-body font-semibold">
             <Link to="/catalog">Comprar Ahora</Link>
