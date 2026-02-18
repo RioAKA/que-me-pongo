@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import PaymentIcons from "@/components/PaymentIcons";
 
 const Footer = () => (
   <footer className="bg-primary text-primary-foreground mt-20">
@@ -35,7 +36,11 @@ const Footer = () => (
           <h4 className="font-heading font-semibold mb-4">Contacto</h4>
           <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
             <span>hola@qmp.com</span>
-            <span>+34 612 345 678</span>
+            <span>+54 9 11 1234-5678</span>
+          </div>
+          <div className="mt-4">
+            <h4 className="font-heading font-semibold mb-2 text-sm">Medios de pago</h4>
+            <PaymentIcons />
           </div>
         </div>
       </div>

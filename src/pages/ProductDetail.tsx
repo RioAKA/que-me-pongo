@@ -4,8 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ChevronLeft, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ShoppingBag, Truck } from "lucide-react";
+import { formatARS } from "@/lib/currency";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -93,10 +95,10 @@ const ProductDetail = () => {
           )}
           <h1 className="font-heading text-3xl md:text-4xl font-bold">{product.name}</h1>
           <div className="flex items-center gap-3">
-            <span className="font-heading text-2xl font-bold">{product.price.toFixed(2)}€</span>
+            <span className="font-heading text-2xl font-bold">{formatARS(product.price)}</span>
             {hasDiscount && (
               <>
-                <span className="text-lg text-muted-foreground line-through">{product.original_price!.toFixed(2)}€</span>
+                <span className="text-lg text-muted-foreground line-through">{formatARS(product.original_price!)}</span>
                 <span className="bg-accent text-accent-foreground text-xs font-bold px-2 py-1 rounded-lg">
                   -{Math.round(((product.original_price! - product.price) / product.original_price!) * 100)}%
                 </span>
@@ -148,12 +150,27 @@ const ProductDetail = () => {
             className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 py-6 text-base font-body font-semibold disabled:opacity-50"
           >
             <ShoppingBag className="mr-2 h-5 w-5" />
-            Añadir al Carrito
+            Agregar al Carrito
           </Button>
 
           {(!selectedSize || !selectedColor) && (
-            <p className="text-sm text-muted-foreground font-body text-center">Selecciona talla y color</p>
+            <p className="text-sm text-muted-foreground font-body text-center">Seleccioná talla y color</p>
           )}
+
+          {/* Shipping Calculator */}
+          <div className="border rounded-lg p-5 space-y-3 mt-2">
+            <div className="flex items-center gap-2">
+              <Truck className="h-5 w-5 text-accent" />
+              <h3 className="font-heading font-semibold">Calculá tu envío</h3>
+            </div>
+            <div className="flex gap-2">
+              <Input placeholder="Tu Código Postal" className="rounded-lg" maxLength={4} />
+              <Button variant="outline" className="rounded-lg font-body shrink-0">Calcular</Button>
+            </div>
+            <p className="text-xs text-muted-foreground font-body">
+              Envíos a todo el país por Correo Argentino y Andreani.
+            </p>
+          </div>
 
           {/* Accordion */}
           <Accordion type="single" collapsible className="mt-6">
@@ -174,7 +191,7 @@ const ProductDetail = () => {
             <AccordionItem value="shipping">
               <AccordionTrigger className="font-heading font-semibold">Envío y Devoluciones</AccordionTrigger>
               <AccordionContent className="font-body text-muted-foreground leading-relaxed">
-                Envío gratuito en pedidos superiores a 59€. Devoluciones gratuitas en 30 días.
+                Envío a todo el país. Devoluciones gratuitas en 30 días.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
