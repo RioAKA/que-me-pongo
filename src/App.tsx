@@ -17,6 +17,7 @@ import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Social from "./pages/Social";
+import Promos from "./pages/Promos";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const AppContent = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/social" element={<Social />} />
+        <Route path="/promos" element={<Promos />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
