@@ -13,38 +13,40 @@ interface SocialLink {
   icon: LucideIcon | React.FC;
   href: string;
   bg: string;
+  disabled?: boolean;
 }
 
 const socials: SocialLink[] = [
   {
     name: "Instagram",
     icon: Instagram,
-    href: "https://instagram.com/qmp",
+    href: "https://www.instagram.com/quemepongobalnearia",
     bg: "bg-secondary hover:bg-accent/20",
   },
   {
     name: "Facebook",
     icon: Facebook,
-    href: "https://facebook.com/qmp",
+    href: "https://www.facebook.com/profile.php?id=100054207144449",
     bg: "bg-secondary hover:bg-accent/20",
   },
   {
     name: "Threads",
     icon: ThreadsIcon,
-    href: "https://threads.net/@qmp",
+    href: "https://www.threads.com/@quemepongobalnearia?xmt=AQF09f88tfzOGXpRRh1L-b5GhOCu9RJ1hyCPrIuhlBEnius",
     bg: "bg-secondary hover:bg-accent/20",
   },
   {
     name: "WhatsApp",
     icon: MessageCircle,
-    href: "https://wa.me/5491112345678",
+    href: "https://wa.me/5493563406523",
     bg: "bg-secondary hover:bg-accent/20",
   },
   {
     name: "Correo Electrónico",
     icon: Mail,
-    href: "mailto:hola@qmp.com",
-    bg: "bg-secondary hover:bg-accent/20",
+    href: "#",
+    bg: "bg-secondary/50 opacity-50 cursor-not-allowed",
+    disabled: true,
   },
 ];
 
@@ -60,13 +62,15 @@ const Social = () => (
       </div>
 
       <div className="space-y-3">
-        {socials.map(({ name, icon: Icon, href, bg }) => (
+        {socials.map(({ name, icon: Icon, href, bg, disabled }) => (
           <a
             key={name}
-            href={href}
-            target={href.startsWith("mailto:") ? undefined : "_blank"}
+            href={disabled ? undefined : href}
+            target={disabled || href.startsWith("mailto:") ? undefined : "_blank"}
             rel="noopener noreferrer"
-            className={`flex items-center gap-4 w-full px-6 py-4 rounded-full ${bg} font-body font-medium transition-all duration-200 hover:scale-[1.03] hover:shadow-md`}
+            aria-disabled={disabled}
+            className={`flex items-center gap-4 w-full px-6 py-4 rounded-full ${bg} font-body font-medium transition-all duration-200 ${disabled ? '' : 'hover:scale-[1.03] hover:shadow-md'}`}
+            onClick={disabled ? (e) => e.preventDefault() : undefined}
           >
             <Icon className="h-5 w-5" />
             <span>{name}</span>

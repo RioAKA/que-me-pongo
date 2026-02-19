@@ -19,9 +19,10 @@ const Footer = () => (
           <h4 className="font-heading font-semibold mb-4">Tienda</h4>
           <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
             <Link to="/catalog" className="hover:text-accent transition-colors">Catálogo</Link>
-            <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Camisetas</Link>
-            <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Chaquetas</Link>
-            <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Accesorios</Link>
+            <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Remeras</Link>
+            <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Abrigos</Link>
+            <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Pantalones</Link>
+            <Link to="/promos" className="hover:text-accent transition-colors">Promos</Link>
           </div>
         </div>
         <div>
@@ -35,8 +36,8 @@ const Footer = () => (
         <div>
           <h4 className="font-heading font-semibold mb-4">Contacto</h4>
           <div className="flex flex-col gap-2 text-sm text-primary-foreground/70">
-            <span>hola@qmp.com</span>
-            <span>+54 9 11 1234-5678</span>
+            <a href="https://wa.me/5493563406523" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">WhatsApp</a>
+            <a href="https://www.instagram.com/quemepongobalnearia" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Instagram</a>
           </div>
           <div className="mt-4">
             <h4 className="font-heading font-semibold mb-2 text-sm">Medios de pago</h4>
