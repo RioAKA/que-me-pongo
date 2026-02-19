@@ -24,9 +24,9 @@ const Navbar = () => {
         <nav className="hidden md:flex items-center gap-8 font-body text-sm tracking-wide">
           <Link to="/" className="hover:text-accent transition-colors">Inicio</Link>
           <Link to="/catalog" className="hover:text-accent transition-colors">Catálogo</Link>
-          <Link to="/catalog?category=camisetas" className="hover:text-accent transition-colors">Remeras</Link>
-          <Link to="/catalog?category=chaquetas" className="hover:text-accent transition-colors">Abrigos</Link>
-          <Link to="/catalog?category=accesorios" className="hover:text-accent transition-colors">Pantalones</Link>
+          <Link to="/catalog?category=remeras" className="hover:text-accent transition-colors">Remeras</Link>
+          <Link to="/catalog?category=abrigos" className="hover:text-accent transition-colors">Abrigos</Link>
+          <Link to="/catalog?category=pantalones" className="hover:text-accent transition-colors">Pantalones</Link>
           <Link to="/promos" className="hover:text-accent transition-colors font-bold text-destructive">SALE</Link>
           <Link to="/social" className="hover:text-accent transition-colors">Redes sociales</Link>
           {isAdmin && (
