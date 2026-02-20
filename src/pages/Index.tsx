@@ -27,22 +27,18 @@ const Index = () => {
     <main>
       {/* Hero */}
       <section className="relative h-[85vh] min-h-[500px] overflow-hidden">
-        <img src={heroBanner} alt="Urban fashion" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
-        <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-lg text-primary-foreground space-y-6 animate-fade-in">
-            <p className="font-body text-sm tracking-[0.3em] uppercase text-accent">Nueva Colección</p>
-            <h1 className="font-heading text-5xl md:text-7xl font-bold leading-tight">
-              Define tu<br />propio estilo
-            </h1>
-            <p className="font-body text-primary-foreground/80 text-lg">
-              Moda urbana con carácter. Piezas únicas que cuentan tu historia.
-            </p>
-            <Button asChild className="rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-6 text-base font-body font-semibold">
+        <img src={heroBanner} alt="¿Qué me pongo?" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-background/20" />
+        <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
+          <div className="flex flex-col items-center gap-10 animate-fade-in text-center">
+            <Button asChild className="rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 px-10 py-6 text-base font-body font-semibold shadow-lg">
               <Link to="/catalog">
                 Explorar Colección <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
+            <h1 className="font-heading text-5xl md:text-7xl font-bold leading-tight text-foreground drop-shadow-sm">
+              ¿Qué me pongo?
+            </h1>
           </div>
         </div>
       </section>
