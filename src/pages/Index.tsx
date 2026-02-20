@@ -36,7 +36,6 @@ const Index = () => {
                 Explorar Colección <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <h1 className="font-heading text-4xl md:text-6xl font-bold text-white drop-shadow-lg">¿Qué me pongo?</h1>
           </div>
         </div>
       </section>
