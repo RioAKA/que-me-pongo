@@ -27,7 +27,7 @@ const Navbar = () => {
           <Link to="/catalog?category=remeras" className="hover:text-accent transition-colors">Remeras</Link>
           <Link to="/catalog?category=abrigos" className="hover:text-accent transition-colors">Abrigos</Link>
           <Link to="/catalog?category=pantalones" className="hover:text-accent transition-colors">Pantalones</Link>
-          <Link to="/promos" className="hover:text-accent transition-colors font-bold text-destructive">SALE</Link>
+          <Link to="/promos" className="hover:text-accent transition-colors font-bold text-destructive">PROMOS</Link>
           <Link to="/social" className="hover:text-accent transition-colors">Redes sociales</Link>
           {isAdmin && (
             <Link to="/admin" className="hover:text-accent transition-colors flex items-center gap-1">
@@ -64,7 +64,7 @@ const Navbar = () => {
         <div className="md:hidden border-t bg-background px-4 py-4 flex flex-col gap-3 animate-fade-in">
           <Link to="/" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Inicio</Link>
           <Link to="/catalog" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Catálogo</Link>
-          <Link to="/promos" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent font-bold text-destructive">SALE</Link>
+          <Link to="/promos" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent font-bold text-destructive">PROMOS</Link>
           <Link to="/social" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent">Redes sociales</Link>
           {isAdmin && (
             <Link to="/admin" onClick={() => setMobileOpen(false)} className="py-2 hover:text-accent flex items-center gap-1">
