@@ -1,0 +1,675 @@
+{{ 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap' | stylesheet_tag }}
+
+<style>
+  /* ── Variables ───────────────────────────────────────────── */
+  #qmp-home-{{ section.id }} {
+    --qmp-accent:        {{ section.settings.accent_color }};
+    --qmp-secondary:     {{ section.settings.secondary_color }};
+    --qmp-dark:          #1e2a2e;
+    --qmp-muted:         #f0fafa;
+    --qmp-border:        #d6eeec;
+    --qmp-radius:        0.5rem;
+    --qmp-font-heading:  'Playfair Display', Georgia, serif;
+    --qmp-font-body:     'DM Sans', system-ui, sans-serif;
+    font-family: var(--qmp-font-body);
+    color: var(--qmp-dark);
+  }
+
+  /* ── Helpers ─────────────────────────────────────────────── */
+  #qmp-home-{{ section.id }} .qmp-container {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #qmp-home-{{ section.id }} .qmp-btn {
+    display: inline-block;
+    background-color: var(--qmp-accent);
+    color: #ffffff;
+    font-family: var(--qmp-font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 1rem 2.5rem;
+    border-radius: var(--qmp-radius);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  #qmp-home-{{ section.id }} .qmp-btn:hover {
+    opacity: 0.9;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  #qmp-home-{{ section.id }} .qmp-hero {
+    position: relative;
+    height: 85vh;
+    min-height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #qmp-home-{{ section.id }} .qmp-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  #qmp-home-{{ section.id }} .qmp-hero__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--qmp-secondary);
+  }
+  #qmp-home-{{ section.id }} .qmp-hero__placeholder svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+  }
+  #qmp-home-{{ section.id }} .qmp-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.20);
+  }
+  #qmp-home-{{ section.id }} .qmp-hero__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  /* ── Categories ──────────────────────────────────────────── */
+  #qmp-home-{{ section.id }} .qmp-categories {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-section-title {
+    font-family: var(--qmp-font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--qmp-dark);
+  }
+  @media (min-width: 768px) {
+    #qmp-home-{{ section.id }} .qmp-section-title {
+      font-size: 2.5rem;
+    }
+  }
+  #qmp-home-{{ section.id }} .qmp-categories__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    #qmp-home-{{ section.id }} .qmp-categories__grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--qmp-radius);
+    background-color: var(--qmp-secondary);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--qmp-dark);
+    transition: box-shadow 0.25s ease;
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card:hover .qmp-category-card__name {
+    color: var(--qmp-accent);
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease;
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card:hover .qmp-category-card__bg {
+    transform: scale(1.05);
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%);
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card__name {
+    position: relative;
+    z-index: 1;
+    font-family: var(--qmp-font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #ffffff;
+    transition: color 0.2s ease;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  /* No image: dark name on light bg */
+  #qmp-home-{{ section.id }} .qmp-category-card--no-image .qmp-category-card__name {
+    color: var(--qmp-dark);
+    text-shadow: none;
+  }
+  #qmp-home-{{ section.id }} .qmp-category-card--no-image:hover .qmp-category-card__name {
+    color: var(--qmp-accent);
+  }
+
+  /* ── Featured Products ───────────────────────────────────── */
+  #qmp-home-{{ section.id }} .qmp-featured {
+    padding-bottom: 5rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-featured__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-featured__header .qmp-section-title {
+    margin-bottom: 0;
+    text-align: left;
+  }
+  #qmp-home-{{ section.id }} .qmp-see-all {
+    font-family: var(--qmp-font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--qmp-accent);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-see-all:hover {
+    text-decoration: underline;
+  }
+  #qmp-home-{{ section.id }} .qmp-products__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    #qmp-home-{{ section.id }} .qmp-products__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card {
+    display: block;
+    text-decoration: none;
+    color: var(--qmp-dark);
+    animation: qmpFadeIn 0.5s ease both;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card:hover {
+    text-decoration: none;
+    color: var(--qmp-dark);
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__img-wrap {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: var(--qmp-radius);
+    background-color: var(--qmp-secondary);
+    margin-bottom: 0.75rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card:hover .qmp-product-card__img {
+    transform: scale(1.05);
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__hover-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(30, 42, 46, 0);
+    transition: background-color 0.3s ease;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card:hover .qmp-product-card__hover-overlay {
+    background-color: rgba(30, 42, 46, 0.05);
+  }
+  #qmp-home-{{ section.id }} .qmp-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background-color: var(--qmp-accent);
+    color: #ffffff;
+    font-family: var(--qmp-font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--qmp-radius);
+    z-index: 1;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__name {
+    font-family: var(--qmp-font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__prices {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__price {
+    font-family: var(--qmp-font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  #qmp-home-{{ section.id }} .qmp-product-card__compare {
+    font-family: var(--qmp-font-body);
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-decoration: line-through;
+    margin: 0;
+  }
+  #qmp-home-{{ section.id }} .qmp-no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+
+  /* ── Shipping Banner ─────────────────────────────────────── */
+  #qmp-home-{{ section.id }} .qmp-shipping {
+    background-color: var(--qmp-secondary);
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    text-align: center;
+  }
+  #qmp-home-{{ section.id }} .qmp-shipping__inner {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  #qmp-home-{{ section.id }} .qmp-shipping__title {
+    font-family: var(--qmp-font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--qmp-dark);
+  }
+  @media (min-width: 768px) {
+    #qmp-home-{{ section.id }} .qmp-shipping__title {
+      font-size: 2.5rem;
+    }
+  }
+  #qmp-home-{{ section.id }} .qmp-shipping__text {
+    font-family: var(--qmp-font-body);
+    font-size: 1rem;
+    color: var(--qmp-dark);
+    opacity: 0.75;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  /* ── Animation ───────────────────────────────────────────── */
+  @keyframes qmpFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div id="qmp-home-{{ section.id }}">
+
+  {%- comment -%} ═══════════════════════════════════════════════
+    1. HERO
+  ═══════════════════════════════════════════════ {%- endcomment -%}
+  <section class="qmp-hero">
+    {%- if section.settings.hero_image != blank -%}
+      <img
+        class="qmp-hero__img"
+        src="{{ section.settings.hero_image | image_url: width: 2000 }}"
+        srcset="
+          {{ section.settings.hero_image | image_url: width: 800  }} 800w,
+          {{ section.settings.hero_image | image_url: width: 1200 }} 1200w,
+          {{ section.settings.hero_image | image_url: width: 2000 }} 2000w"
+        sizes="100vw"
+        alt="{{ section.settings.hero_image.alt | escape }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- else -%}
+      <div class="qmp-hero__placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+      </div>
+    {%- endif -%}
+
+    <div class="qmp-hero__overlay"></div>
+
+    <div class="qmp-hero__content">
+      {%- if section.settings.hero_cta_text != blank -%}
+        <a
+          href="{{ section.settings.hero_cta_url | default: '/collections/all' }}"
+          class="qmp-btn"
+        >
+          {{ section.settings.hero_cta_text }}
+        </a>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ═══════════════════════════════════════════════
+    2. CATEGORIES
+  ═══════════════════════════════════════════════ {%- endcomment -%}
+  {%- assign category_blocks = section.blocks | where: 'type', 'category' -%}
+  {%- if category_blocks.size > 0 -%}
+    <section class="qmp-categories">
+      <div class="qmp-container">
+        {%- if section.settings.categories_heading != blank -%}
+          <h2 class="qmp-section-title">{{ section.settings.categories_heading }}</h2>
+        {%- endif -%}
+
+        <div class="qmp-categories__grid">
+          {%- for block in category_blocks -%}
+            {%- assign has_image = false -%}
+            {%- if block.settings.image != blank -%}
+              {%- assign has_image = true -%}
+            {%- endif -%}
+
+            <a
+              href="{{ block.settings.link | default: '/collections/all' }}"
+              class="qmp-category-card{% unless has_image %} qmp-category-card--no-image{% endunless %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if has_image -%}
+                <div
+                  class="qmp-category-card__bg"
+                  style="background-image: url('{{ block.settings.image | image_url: width: 600 }}');"
+                  role="img"
+                  aria-label="{{ block.settings.name | escape }}"
+                ></div>
+                <div class="qmp-category-card__overlay"></div>
+              {%- endif -%}
+
+              <span class="qmp-category-card__name">{{ block.settings.name }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ═══════════════════════════════════════════════
+    3. FEATURED PRODUCTS
+  ═══════════════════════════════════════════════ {%- endcomment -%}
+  <section class="qmp-featured">
+    <div class="qmp-container">
+      <div class="qmp-featured__header">
+        {%- if section.settings.featured_heading != blank -%}
+          <h2 class="qmp-section-title">{{ section.settings.featured_heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.featured_collection != blank -%}
+          {%- assign featured_col = collections[section.settings.featured_collection] -%}
+          {%- if featured_col != blank -%}
+            <a href="{{ featured_col.url }}" class="qmp-see-all">Ver todo &rarr;</a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      <div class="qmp-products__grid">
+        {%- if section.settings.featured_collection != blank -%}
+          {%- assign featured_col = collections[section.settings.featured_collection] -%}
+
+          {%- if featured_col != blank and featured_col.products.size > 0 -%}
+            {%- assign product_limit = section.settings.product_limit | default: 4 -%}
+
+            {%- for product in featured_col.products limit: product_limit -%}
+              {%- assign has_discount = false -%}
+              {%- if product.compare_at_price > product.price -%}
+                {%- assign has_discount = true -%}
+                {%- assign saved = product.compare_at_price | minus: product.price -%}
+                {%- assign discount_pct = saved | times: 100 | divided_by: product.compare_at_price -%}
+              {%- endif -%}
+
+              <a href="{{ product.url }}" class="qmp-product-card">
+                <div class="qmp-product-card__img-wrap">
+                  {%- if product.featured_image -%}
+                    <img
+                      class="qmp-product-card__img"
+                      src="{{ product.featured_image | image_url: width: 600 }}"
+                      srcset="
+                        {{ product.featured_image | image_url: width: 300 }} 300w,
+                        {{ product.featured_image | image_url: width: 600 }} 600w"
+                      sizes="(min-width: 768px) 25vw, 50vw"
+                      alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'qmp-product-card__img' }}
+                  {%- endif -%}
+
+                  <div class="qmp-product-card__hover-overlay"></div>
+
+                  {%- if has_discount -%}
+                    <span class="qmp-badge">-{{ discount_pct }}%</span>
+                  {%- endif -%}
+                </div>
+
+                <p class="qmp-product-card__name">{{ product.title }}</p>
+
+                <div class="qmp-product-card__prices">
+                  <p class="qmp-product-card__price">{{ product.price | money }}</p>
+                  {%- if has_discount -%}
+                    <p class="qmp-product-card__compare">{{ product.compare_at_price | money }}</p>
+                  {%- endif -%}
+                </div>
+              </a>
+            {%- endfor -%}
+
+          {%- else -%}
+            <p class="qmp-no-products">Asigná una colección en el Customizer para ver los productos aquí.</p>
+          {%- endif -%}
+
+        {%- else -%}
+          <p class="qmp-no-products">Asigná una colección en el Customizer para ver los productos aquí.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ═══════════════════════════════════════════════
+    4. SHIPPING BANNER
+  ═══════════════════════════════════════════════ {%- endcomment -%}
+  <section class="qmp-shipping">
+    <div class="qmp-shipping__inner">
+      {%- if section.settings.shipping_heading != blank -%}
+        <h2 class="qmp-shipping__title">{{ section.settings.shipping_heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.shipping_subtext != blank -%}
+        <p class="qmp-shipping__text">{{ section.settings.shipping_subtext }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.shipping_cta_text != blank -%}
+        <a
+          href="{{ section.settings.shipping_cta_url | default: '/collections/all' }}"
+          class="qmp-btn"
+        >
+          {{ section.settings.shipping_cta_text }}
+        </a>
+      {%- endif -%}
+    </div>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "QMP - Homepage",
+  "tag": "div",
+  "class": "qmp-home-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colores globales"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Color acento (botones, badges, links)",
+      "default": "#2a9d8f"
+    },
+    {
+      "type": "color",
+      "id": "secondary_color",
+      "label": "Color secundario (fondos suaves)",
+      "default": "#eef8f7"
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Imagen de fondo del hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_text",
+      "label": "Texto del botón",
+      "default": "Explorar Colección →"
+    },
+    {
+      "type": "url",
+      "id": "hero_cta_url",
+      "label": "Link del botón"
+    },
+    {
+      "type": "header",
+      "content": "Sección de categorías"
+    },
+    {
+      "type": "text",
+      "id": "categories_heading",
+      "label": "Título de la sección",
+      "default": "Categorías"
+    },
+    {
+      "type": "header",
+      "content": "Productos destacados"
+    },
+    {
+      "type": "text",
+      "id": "featured_heading",
+      "label": "Título de la sección",
+      "default": "Destacados"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Colección a mostrar"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "default": 4,
+      "label": "Cantidad de productos a mostrar"
+    },
+    {
+      "type": "header",
+      "content": "Banner de envíos"
+    },
+    {
+      "type": "text",
+      "id": "shipping_heading",
+      "label": "Título",
+      "default": "Envíos a Todo el País"
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_subtext",
+      "label": "Subtexto",
+      "default": "Por Correo Argentino y Andreani. Devoluciones gratuitas en 30 días."
+    },
+    {
+      "type": "text",
+      "id": "shipping_cta_text",
+      "label": "Texto del botón",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "shipping_cta_url",
+      "label": "Link del botón"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Categoría",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre de la categoría",
+          "default": "Remeras"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen de fondo"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link al hacer clic"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "QMP - Homepage",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": { "name": "Remeras" }
+        },
+        {
+          "type": "category",
+          "settings": { "name": "Abrigos" }
+        },
+        {
+          "type": "category",
+          "settings": { "name": "Pantalones" }
+        },
+        {
+          "type": "category",
+          "settings": { "name": "Accesorios" }
+        },
+        {
+          "type": "category",
+          "settings": { "name": "Promos" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
