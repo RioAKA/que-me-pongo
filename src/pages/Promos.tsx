@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
+import PriceRangeFilter from "@/components/PriceRangeFilter";
 import { SlidersHorizontal, X, Tag } from "lucide-react";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -10,6 +11,7 @@ const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const Promos = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 999999]);
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: products, isLoading } = useQuery({
@@ -30,21 +32,29 @@ const Promos = () => {
     return Array.from(colors);
   }, [products]);
 
+  const priceBounds = useMemo(() => {
+    if (!products || products.length === 0) return { min: 0, max: 100000 };
+    const prices = products.map((p: any) => p.price);
+    return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
+  }, [products]);
+
   const filtered = useMemo(() => {
     if (!products) return [];
     return products.filter((p: any) => {
       if (selectedSize && !p.sizes?.includes(selectedSize)) return false;
       if (selectedColor && !p.colors?.includes(selectedColor)) return false;
+      if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
       return true;
     });
-  }, [products, selectedSize, selectedColor]);
+  }, [products, selectedSize, selectedColor, priceRange]);
 
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedColor(null);
+    setPriceRange([0, 999999]);
   };
 
-  const hasActiveFilters = selectedSize || selectedColor;
+  const hasActiveFilters = selectedSize || selectedColor || priceRange[0] > 0 || priceRange[1] < 999999;
 
   return (
     <main className="container mx-auto px-4 py-10">
@@ -102,6 +112,13 @@ const Promos = () => {
               ))}
             </div>
           </div>
+
+          <PriceRangeFilter
+            min={priceBounds.min}
+            max={priceBounds.max}
+            value={[Math.max(priceRange[0], priceBounds.min), Math.min(priceRange[1], priceBounds.max)]}
+            onChange={setPriceRange}
+          />
         </aside>
 
         <div className="flex-1">

@@ -6,15 +6,9 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SlidersHorizontal, X } from "lucide-react";
+import PriceRangeFilter from "@/components/PriceRangeFilter";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
-const PRICE_RANGES = [
-  { label: "Todos", min: 0, max: Infinity },
-  { label: "< $5.000", min: 0, max: 5000 },
-  { label: "$5.000 - $15.000", min: 5000, max: 15000 },
-  { label: "$15.000 - $30.000", min: 15000, max: 30000 },
-  { label: "> $30.000", min: 30000, max: Infinity },
-];
 
 const CATEGORY_DISPLAY: Record<string, string> = {
   remeras: "Remeras",
@@ -29,7 +23,7 @@ const Catalog = () => {
   const categorySlug = searchParams.get("category");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState(0);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 999999]);
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: products, isLoading } = useQuery({
@@ -55,14 +49,19 @@ const Catalog = () => {
     return Array.from(colors);
   }, [products]);
 
+  const priceBounds = useMemo(() => {
+    if (!products || products.length === 0) return { min: 0, max: 100000 };
+    const prices = products.map((p: any) => p.price);
+    return { min: Math.floor(Math.min(...prices)), max: Math.ceil(Math.max(...prices)) };
+  }, [products]);
+
   const filtered = useMemo(() => {
     if (!products) return [];
     return products.filter((p: any) => {
       if (categorySlug && p.category?.slug !== categorySlug) return false;
       if (selectedSize && !p.sizes?.includes(selectedSize)) return false;
       if (selectedColor && !p.colors?.includes(selectedColor)) return false;
-      const range = PRICE_RANGES[priceRange];
-      if (p.price < range.min || p.price > range.max) return false;
+      if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
       return true;
     });
   }, [products, categorySlug, selectedSize, selectedColor, priceRange]);
@@ -74,7 +73,7 @@ const Catalog = () => {
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedColor(null);
-    setPriceRange(0);
+    setPriceRange([0, 999999]);
     setSearchParams({});
   };
 
@@ -86,7 +85,7 @@ const Catalog = () => {
     }
   };
 
-  const hasActiveFilters = selectedSize || selectedColor || priceRange > 0 || categorySlug;
+  const hasActiveFilters = selectedSize || selectedColor || priceRange[0] > 0 || priceRange[1] < 999999 || categorySlug;
 
   return (
     <main className="container mx-auto px-4 py-10">
@@ -164,22 +163,12 @@ const Catalog = () => {
             </div>
           </div>
 
-          <div>
-            <h3 className="font-heading font-semibold mb-3">Precio</h3>
-            <div className="flex flex-col gap-2">
-              {PRICE_RANGES.map((range, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPriceRange(priceRange === i ? 0 : i)}
-                  className={`text-left px-3 py-1.5 text-sm rounded-lg border font-body transition-colors ${
-                    priceRange === i && i !== 0 ? 'bg-accent text-accent-foreground border-accent' : 'hover:border-accent'
-                  }`}
-                >
-                  {range.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <PriceRangeFilter
+            min={priceBounds.min}
+            max={priceBounds.max}
+            value={[Math.max(priceRange[0], priceBounds.min), Math.min(priceRange[1], priceBounds.max)]}
+            onChange={setPriceRange}
+          />
         </aside>
 
         {/* Product grid */}
