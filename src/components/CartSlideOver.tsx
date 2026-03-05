@@ -1,12 +1,21 @@
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
+import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { formatARS } from "@/lib/currency";
 import PaymentIcons from "@/components/PaymentIcons";
 
 const CartSlideOver = () => {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateQuantity, getCheckoutUrl, isLoading } = useShopifyCartStore();
+
+  const totalPrice = items.reduce((sum, i) => sum + parseFloat(i.price.amount) * i.quantity, 0);
+
+  const handleCheckout = () => {
+    const url = getCheckoutUrl();
+    if (url) {
+      window.open(url, '_blank');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -30,32 +39,41 @@ const CartSlideOver = () => {
         ) : (
           <>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {items.map((item) => (
-                <div key={item.id} className="flex gap-4 p-3 rounded-lg bg-secondary/50">
-                  {item.product?.images?.[0] && (
-                    <img src={item.product.images[0]} alt={item.product.name} className="w-20 h-20 object-cover rounded-lg" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-body font-medium text-sm truncate">{item.product?.name}</h4>
-                    <p className="text-xs text-muted-foreground">{item.size} · {item.color}</p>
-                    <p className="font-heading font-semibold text-sm mt-1">{formatARS(item.product?.price || 0)}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 rounded-md hover:bg-muted"><Minus className="h-3 w-3" /></button>
-                      <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1 rounded-md hover:bg-muted"><Plus className="h-3 w-3" /></button>
-                      <button onClick={() => removeItem(item.id)} className="ml-auto p-1 text-destructive hover:bg-destructive/10 rounded-md"><Trash2 className="h-3 w-3" /></button>
+              {items.map((item) => {
+                const imageUrl = item.product.node.images.edges[0]?.node.url;
+                return (
+                  <div key={item.variantId} className="flex gap-4 p-3 rounded-lg bg-secondary/50">
+                    {imageUrl && (
+                      <img src={imageUrl} alt={item.product.node.title} className="w-20 h-20 object-cover rounded-lg" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-body font-medium text-sm truncate">{item.product.node.title}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {item.selectedOptions.map(o => o.value).join(' · ')}
+                      </p>
+                      <p className="font-heading font-semibold text-sm mt-1">{formatARS(parseFloat(item.price.amount))}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="p-1 rounded-md hover:bg-muted" disabled={isLoading}><Minus className="h-3 w-3" /></button>
+                        <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="p-1 rounded-md hover:bg-muted" disabled={isLoading}><Plus className="h-3 w-3" /></button>
+                        <button onClick={() => removeItem(item.variantId)} className="ml-auto p-1 text-destructive hover:bg-destructive/10 rounded-md" disabled={isLoading}><Trash2 className="h-3 w-3" /></button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="border-t p-6 space-y-4">
               <div className="flex justify-between font-heading text-lg font-semibold">
                 <span>Total</span>
                 <span>{formatARS(totalPrice)}</span>
               </div>
-              <Button className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 font-body font-semibold" asChild>
-                <Link to="/checkout" onClick={closeCart}>Finalizar Compra</Link>
+              <Button
+                onClick={handleCheckout}
+                disabled={isLoading}
+                className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 font-body font-semibold"
+              >
+                Finalizar Compra
               </Button>
               <div className="flex justify-center pt-2">
                 <PaymentIcons />

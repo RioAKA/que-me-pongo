@@ -1,29 +1,21 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useCart } from "@/contexts/CartContext";
+import { useShopifyProductByHandle } from "@/hooks/useShopifyProducts";
+import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ChevronLeft, ShoppingBag, Truck } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { formatARS } from "@/lib/currency";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { addItem } = useCart();
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>("");
-  const [selectedImage, setSelectedImage] = useState(0);
+  const { data: product, isLoading } = useShopifyProductByHandle(slug);
+  const { addItem, openCart } = useShopifyCartStore();
 
-  const { data: product, isLoading } = useQuery({
-    queryKey: ["product", slug],
-    queryFn: async () => {
-      const { data } = await supabase.from("products").select("*, category:categories(*)").eq("slug", slug!).single();
-      return data;
-    },
-    enabled: !!slug,
-  });
+  const [selectedVariantId, setSelectedVariantId] = useState<string>("");
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedImage, setSelectedImage] = useState(0);
 
   if (isLoading) {
     return (
@@ -48,12 +40,39 @@ const ProductDetail = () => {
     );
   }
 
-  const hasDiscount = product.original_price && product.original_price > product.price;
+  const images = product.images?.edges || [];
+  const variants = product.variants?.edges || [];
+  const options = product.options || [];
+  const price = parseFloat(product.priceRange.minVariantPrice.amount);
 
-  const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) return;
-    addItem(product.id, selectedSize, selectedColor);
+  const handleOptionChange = (optionName: string, value: string) => {
+    const newOptions = { ...selectedOptions, [optionName]: value };
+    setSelectedOptions(newOptions);
+
+    // Find matching variant
+    const match = variants.find((v: any) =>
+      v.node.selectedOptions.every((so: any) => newOptions[so.name] === so.value)
+    );
+    if (match) setSelectedVariantId(match.node.id);
   };
+
+  const selectedVariant = variants.find((v: any) => v.node.id === selectedVariantId)?.node;
+  const displayPrice = selectedVariant ? parseFloat(selectedVariant.price.amount) : price;
+
+  const handleAddToCart = async () => {
+    if (!selectedVariantId || !selectedVariant) return;
+    await addItem({
+      product: { node: product },
+      variantId: selectedVariantId,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price,
+      quantity: 1,
+      selectedOptions: selectedVariant.selectedOptions,
+    });
+    openCart();
+  };
+
+  const allOptionsSelected = options.every((opt: any) => selectedOptions[opt.name]);
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -66,14 +85,14 @@ const ProductDetail = () => {
         <div className="space-y-4">
           <div className="aspect-[3/4] rounded-lg overflow-hidden bg-secondary/30">
             <img
-              src={product.images?.[selectedImage] || "/placeholder.svg"}
-              alt={product.name}
+              src={images[selectedImage]?.node.url || "/placeholder.svg"}
+              alt={images[selectedImage]?.node.altText || product.title}
               className="w-full h-full object-cover"
             />
           </div>
-          {product.images && product.images.length > 1 && (
+          {images.length > 1 && (
             <div className="flex gap-3">
-              {product.images.map((img, i) => (
+              {images.map((img: any, i: number) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
@@ -81,7 +100,7 @@ const ProductDetail = () => {
                     selectedImage === i ? 'border-accent' : 'border-transparent'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img.node.url} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -90,74 +109,45 @@ const ProductDetail = () => {
 
         {/* Info */}
         <div className="space-y-6">
-          {(product as any).category && (
-            <p className="text-sm text-muted-foreground font-body tracking-wider uppercase">{(product as any).category.name}</p>
-          )}
-          <h1 className="font-heading text-3xl md:text-4xl font-bold">{product.name}</h1>
-          <div className="flex items-center gap-3">
-            <span className="font-heading text-2xl font-bold">{formatARS(product.price)}</span>
-            {hasDiscount && (
-              <>
-                <span className="text-lg text-muted-foreground line-through">{formatARS(product.original_price!)}</span>
-                <span className="bg-accent text-accent-foreground text-xs font-bold px-2 py-1 rounded-lg">
-                  -{Math.round(((product.original_price! - product.price) / product.original_price!) * 100)}%
-                </span>
-              </>
-            )}
-          </div>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold">{product.title}</h1>
+          <span className="font-heading text-2xl font-bold">{formatARS(displayPrice)}</span>
 
           <p className="font-body text-muted-foreground leading-relaxed">{product.description}</p>
 
-          {/* Size */}
-          <div>
-            <h3 className="font-heading font-semibold mb-3">Talla</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.sizes?.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`px-4 py-2 text-sm rounded-lg border font-body transition-colors ${
-                    selectedSize === size ? 'bg-accent text-accent-foreground border-accent' : 'hover:border-accent'
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+          {/* Options */}
+          {options.map((option: any) => (
+            <div key={option.name}>
+              <h3 className="font-heading font-semibold mb-3">{option.name}</h3>
+              <div className="flex flex-wrap gap-2">
+                {option.values.map((value: string) => (
+                  <button
+                    key={value}
+                    onClick={() => handleOptionChange(option.name, value)}
+                    className={`px-4 py-2 text-sm rounded-lg border font-body transition-colors ${
+                      selectedOptions[option.name] === value ? 'bg-accent text-accent-foreground border-accent' : 'hover:border-accent'
+                    }`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Color */}
-          <div>
-            <h3 className="font-heading font-semibold mb-3">Color</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.colors?.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`px-4 py-2 text-sm rounded-lg border font-body transition-colors ${
-                    selectedColor === color ? 'bg-accent text-accent-foreground border-accent' : 'hover:border-accent'
-                  }`}
-                >
-                  {color}
-                </button>
-              ))}
-            </div>
-          </div>
+          ))}
 
           <Button
             onClick={handleAddToCart}
-            disabled={!selectedSize || !selectedColor}
+            disabled={!allOptionsSelected}
             className="w-full rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 py-6 text-base font-body font-semibold disabled:opacity-50"
           >
             <ShoppingBag className="mr-2 h-5 w-5" />
             Agregar al Carrito
           </Button>
 
-          {(!selectedSize || !selectedColor) && (
-            <p className="text-sm text-muted-foreground font-body text-center">Seleccioná talla y color</p>
+          {!allOptionsSelected && (
+            <p className="text-sm text-muted-foreground font-body text-center">Seleccioná todas las opciones</p>
           )}
 
-          {/* Shipping Calculator */}
+          {/* Shipping */}
           <div className="border rounded-lg p-5 space-y-3 mt-2">
             <div className="flex items-center gap-2">
               <Truck className="h-5 w-5 text-accent" />
@@ -172,7 +162,6 @@ const ProductDetail = () => {
             </p>
           </div>
 
-          {/* Accordion */}
           <Accordion type="single" collapsible className="mt-6">
             <AccordionItem value="description">
               <AccordionTrigger className="font-heading font-semibold">Descripción</AccordionTrigger>
@@ -180,14 +169,6 @@ const ProductDetail = () => {
                 {product.description}
               </AccordionContent>
             </AccordionItem>
-            {product.care_instructions && (
-              <AccordionItem value="care">
-                <AccordionTrigger className="font-heading font-semibold">Cuidados de la Prenda</AccordionTrigger>
-                <AccordionContent className="font-body text-muted-foreground leading-relaxed">
-                  {product.care_instructions}
-                </AccordionContent>
-              </AccordionItem>
-            )}
             <AccordionItem value="shipping">
               <AccordionTrigger className="font-heading font-semibold">Envío y Devoluciones</AccordionTrigger>
               <AccordionContent className="font-body text-muted-foreground leading-relaxed">
