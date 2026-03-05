@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import { ShoppingBag, User, Menu, X, Shield } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext";
+import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { useRole } from "@/hooks/useRole";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
-  const { totalItems, openCart } = useCart();
+  const totalItems = useShopifyCartStore(s => s.totalItems)();
+  const openCart = useShopifyCartStore(s => s.openCart);
   const { isAdmin } = useRole();
   const [mobileOpen, setMobileOpen] = useState(false);
 

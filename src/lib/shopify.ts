@@ -1,9 +1,12 @@
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const SHOPIFY_API_VERSION = '2025-07';
 const SHOPIFY_STORE_PERMANENT_DOMAIN = 'b6zzv4-ty.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 const SHOPIFY_STOREFRONT_TOKEN = 'b90d3f5d03bf0be8a5da63296caf5863';
+
+const USE_EDGE_FUNCTION = true;
 
 export interface ShopifyProduct {
   node: {
@@ -146,6 +149,23 @@ export const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
 `;
 
 export async function storefrontApiRequest(query: string, variables: Record<string, unknown> = {}) {
+  if (USE_EDGE_FUNCTION) {
+    const { data, error } = await supabase.functions.invoke('shopify-storefront', {
+      body: { query, variables },
+    });
+
+    if (error) {
+      throw new Error(`Edge function error: ${error.message}`);
+    }
+
+    if (data?.errors) {
+      throw new Error(`Error Shopify: ${data.errors.map((e: { message: string }) => e.message).join(', ')}`);
+    }
+
+    return data;
+  }
+
+  // Fallback: direct API call
   const response = await fetch(SHOPIFY_STOREFRONT_URL, {
     method: 'POST',
     headers: {

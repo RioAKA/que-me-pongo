@@ -1,27 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import ProductCard from "@/components/ProductCard";
+import { useShopifyProducts, useShopifyCollections } from "@/hooks/useShopifyProducts";
+import ShopifyProductCard from "@/components/ShopifyProductCard";
 import heroBanner from "@/assets/hero-banner.jpg";
 
 const Index = () => {
-  const { data: featured } = useQuery({
-    queryKey: ["featured-products"],
-    queryFn: async () => {
-      const { data } = await supabase.from("products").select("*").eq("featured", true).limit(4);
-      return data || [];
-    },
-  });
-
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("categories").select("*");
-      return data || [];
-    },
-  });
+  const { data: products } = useShopifyProducts(4);
+  const { data: collections } = useShopifyCollections();
 
   return (
     <main>
@@ -40,21 +26,26 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-12">Categorías</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories?.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/catalog?category=${cat.slug}`}
-              className="group relative overflow-hidden rounded-lg bg-secondary aspect-square flex items-end p-4 hover:shadow-lg transition-shadow"
-            >
-              <span className="font-heading font-semibold text-lg group-hover:text-accent transition-colors">{cat.name}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Collections */}
+      {collections && collections.length > 0 && (
+        <section className="container mx-auto px-4 py-20">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-12">Categorías</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {collections.map((col) => (
+              <Link
+                key={col.id}
+                to={`/catalog?collection=${col.handle}`}
+                className="group relative overflow-hidden rounded-lg bg-secondary aspect-square flex items-end p-4 hover:shadow-lg transition-shadow"
+              >
+                {col.image && (
+                  <img src={col.image.url} alt={col.image.altText || col.title} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+                <span className="relative font-heading font-semibold text-lg group-hover:text-accent transition-colors">{col.title}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Featured */}
       <section className="container mx-auto px-4 pb-20">
@@ -65,9 +56,12 @@ const Index = () => {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featured?.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products?.map((product) => (
+            <ShopifyProductCard key={product.node.id} product={product} />
           ))}
+          {(!products || products.length === 0) && (
+            <p className="col-span-full text-center text-muted-foreground font-body py-10">No se encontraron productos</p>
+          )}
         </div>
       </section>
 
